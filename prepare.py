@@ -12,14 +12,11 @@ def prep_store_data(df):
     return df
 
 def prep_opsd_data(df):
-    df.columns = [column.lower() for column in df]
-    df = df.rename(columns={'wind+solar': 'wind_and_solar'})
-
+    df.columns = [column.replace('+','_').lower() for column in df]
     df.date = pd.to_datetime(df.date)
     df = df.set_index('date').sort_index()
-
-    df['month'] = df.index.month
+    df['month'] = df.index.month_name()
     df['year'] = df.index.year
-
     df = df.fillna(0)
+    df['wind_solar'] = df.wind + df.solar
     return df
